@@ -1,6 +1,8 @@
-# Function to analyze and compare server responses
+# Function to analyze and compare responses
 def analyze_response(default_response, test_response, payload):
-    if len(default_response) == len(test_response):
-        print(f"Payload '{payload}' produced a similar response (likely true condition).")
+    # Check if the response is the same as the default response
+    if test_response == default_response:
+        print(f"Payload '{payload}' produced a similar response to the default (likely true condition).")
     else:
-        print(f"Payload '{payload}' produced a different response (likely false condition).")
+        # Response is different from the default; check if it's different from the default and true responses
+        print(f"Payload '{payload}' produced a different response from the default (likely false condition).")
