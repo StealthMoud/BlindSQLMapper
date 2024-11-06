@@ -1,6 +1,6 @@
 import argparse
-from sql_tester import test_sql_injection
-from url_utils import extract_id
+from Modules.SQLTester import test_sql_injection
+from Modules.URLUtils import extract_id
 
 
 def main():

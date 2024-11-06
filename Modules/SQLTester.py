@@ -1,5 +1,5 @@
-from url_utils import construct_test_url
-from response_analyzer import analyze_response
+from Modules.ResponseAnalyzer import analyze_response
+from Modules.URLUtils import construct_test_url
 import requests
 import time
 
