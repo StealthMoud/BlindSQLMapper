@@ -18,13 +18,12 @@ def test_boolean_based_sql_injection(target_url, id_value):
         new_url = construct_test_url(target_url, id_value, formatted_payload)
         response = send_payload(new_url)
         print(formatted_payload)
-        if analyze_response(default_response, response, formatted_payload):  # True condition matches default response
-            test_1_responses.append(response)  # Store true responses
+        if analyze_response(default_response, response, formatted_payload):
+            test_1_responses.append(response)
 
-    # Check for False conditions using the same placeholders
     print("\nTesting with False conditions:\n")
     for payload in boolean_based_test:
-        formatted_payload = payload.format("1=2")  # Insert a false condition
+        formatted_payload = payload.format("1=2")
         new_url = construct_test_url(target_url, id_value, formatted_payload)
         response = send_payload(new_url)
         print(formatted_payload)
@@ -34,5 +33,4 @@ def test_boolean_based_sql_injection(target_url, id_value):
         if default_response == test_1_responses[0] and response != test_1_responses[0]:
             return "boolean", formatted_payload, default_response
 
-    # If no vulnerabilities found, return None
     return None, None
