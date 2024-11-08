@@ -1,17 +1,10 @@
 from Modules.URLUtils import construct_test_url
-import requests
+from Modules.RequestHandler import send_payload
 import time
 
 time_based_payloads = [" AND SLEEP({})", "' AND SLEEP({})%23", '" AND SLEEP({})%23']
 
 
-# Function to send SQL payloads and receive the response
-def send_payload(target_url):
-    response = requests.get(target_url)
-    return response.text
-
-
-# Function to test SQL injection
 def test_time_based_sql_injection(target_url, id_value):
 
     # Test: Check for Time-based vulnerabilities
@@ -36,7 +29,7 @@ def test_time_based_sql_injection(target_url, id_value):
                 print(
                     f"Confirmed: Payload '{formatted_payload}' caused a significant delay (likely vulnerable to "
                     f"time-based injection).")
-                return "time-based"
+                return "time-based", formatted_payload
 
     # If no vulnerabilities found, return None
-    return None
+    return None, None
