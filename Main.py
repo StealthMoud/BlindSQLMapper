@@ -24,15 +24,13 @@ def main():
         else:
             print("No Boolean-based SQL injection vulnerability detected.")
 
-        # Ask if the user wants to test for Time-based vulnerabilities
         test_time_based = input("Do you want to test for Time-based SQL injection as well? (y/n): ").strip().lower()
 
         if test_time_based == 'y':
-            # Test for Time-based SQL injection if user agrees
             time_based_vulnerability, exploitable_payload = test_time_based_sql_injection(target_url, id_value)
             exploitable_payloads.append(exploitable_payload)
             if time_based_vulnerability == "time-based":
-                print(f"Time-based SQL injection vulnerability detected with this payload: {exploitable_payload}.")
+                print(f"Time-based SQL injection vulnerability detected with this payload: {exploitable_payload}.\n")
                 detected_vulnerabilities.append("time-based")
             else:
                 print("No Time-based SQL injection vulnerability detected.")
@@ -43,10 +41,9 @@ def main():
                 print(f"{idx}. {vulnerability.capitalize()} SQL Injection")
 
             while True:
-                exploit_option = input("Do you want to attempt exploitation? (y/n): ").strip().lower()
+                exploit_option = input("\nDo you want to attempt exploitation? (y/n): ").strip().lower()
 
                 if exploit_option == 'y':
-                    # Ask the user to choose which vulnerability to exploit
                     while True:
                         try:
                             choice = int(input(
@@ -56,16 +53,16 @@ def main():
                                 ExploitablePayload = exploitable_payloads[choice - 1]
                                 print(f"Exploiting {selected_vulnerability} vulnerability...")
                                 start_exploitation(default_response, target_url, id_value, selected_vulnerability, ExploitablePayload)
-                                break  # Exit the inner loop after exploitation
+                                break
                             else:
                                 print(
                                     f"Invalid choice, please choose a number between 1 and {len(detected_vulnerabilities)}.")
                         except ValueError:
                             print("Invalid input. Please enter a valid number.")
-                    break  # Exit the outer loop after exploitation
+                    break
                 elif exploit_option == 'n':
                     print("No exploitation performed.")
-                    break  # Exit the loop if the user chooses not to exploit
+                    break
                 else:
                     print("Invalid input. Please enter 'y' or 'n'.")
         else:
