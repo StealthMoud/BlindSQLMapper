@@ -26,6 +26,8 @@ def test_time_based_sql_injection(target_url, id_value):
                 print(
                     f"Confirmed: Payload '{formatted_payload}' caused a significant delay (likely vulnerable to "
                     f"time-based injection).")
-                return "time-based", formatted_payload
+
+                formatted_payload_no_sleep = formatted_payload.replace('SLEEP(10)', ' ')
+                return "time-based", formatted_payload_no_sleep
 
     return None, None

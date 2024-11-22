@@ -33,4 +33,4 @@ def test_boolean_based_sql_injection(target_url, id_value):
         if default_response == test_1_responses[0] and response != test_1_responses[0]:
             return "boolean", formatted_payload, default_response
 
-    return None, None
+    return None, None, None
